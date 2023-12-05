@@ -1,18 +1,24 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Next.js",
+  name: "Senti Menti",
   description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+    "Sentiment analysis tool for epic brokers.",
   mainNav: [
     {
       title: "Home",
       href: "/",
     },
+    {
+      title: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      title: "Settings",
+      href: "/settings",
+    },
   ],
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
+    
   },
 }
