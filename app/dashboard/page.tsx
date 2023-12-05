@@ -190,7 +190,6 @@ export default function IndexPage() {
               <TableRow>
                 <TableHead className="w-[100px]">Ticker</TableHead>
                 <TableHead>Sentiment score</TableHead>
-                <TableHead>Headline</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -204,7 +203,6 @@ export default function IndexPage() {
                   >
                     {ticker.headlineScore.toFixed(2)}
                   </TableCell>
-                  <TableCell className="font-bold">{ticker.ticker}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -3,7 +3,6 @@
 import React, { useEffect } from "react"
 import Link from "next/link"
 import { Label } from "recharts"
-import { toast, useToast } from "@/components/ui/use-toast"
 
 import {
   AlertDialog,
@@ -44,17 +43,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Overview } from "@/components/dashboard"
 import { Toaster } from "@/components/ui/toaster"
-
-
+import { toast, useToast } from "@/components/ui/use-toast"
+import { Overview } from "@/components/dashboard"
+import { Icons } from "@/components/icons"
 
 export default function IndexPage() {
   const [tickers, setTickers] = React.useState<any[]>([])
 
   const [availableTickers, setAvailableTickers] = React.useState<any[]>([])
 
-
+  const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
   useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
@@ -76,7 +75,7 @@ export default function IndexPage() {
             console.error(error)
           })
 
-          fetch("http://localhost:8080/api/ticker")
+        fetch("http://localhost:8080/api/ticker")
           .then(async (response) => {
             if (response.ok) {
               return await response.json()
@@ -90,27 +89,28 @@ export default function IndexPage() {
           .catch((error) => {
             console.error(error)
           })
-      }else{
+      } else {
         window.location.href = "/login"
       }
-
-
-
-
-
     }
   }, [tickers])
 
   const tickerSelected = (ticker: string) => {
-    if(!ticker){
-      return;
+    if (!ticker) {
+      return
     }
-    fetch("http://localhost:8080/api/user/" + localStorage.getItem("sentimentiUsername") + "/watchlist/"+ticker, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      "http://localhost:8080/api/user/" +
+        localStorage.getItem("sentimentiUsername") +
+        "/watchlist/" +
+        ticker,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then(async (response) => {
         if (response.ok) {
           return response
@@ -130,15 +130,21 @@ export default function IndexPage() {
   }
 
   const deleteTicker = (ticker: string) => {
-    if(!ticker){
-      return;
+    if (!ticker) {
+      return
     }
-    fetch("http://localhost:8080/api/user/" + localStorage.getItem("sentimentiUsername") + "/watchlist/"+ticker, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    fetch(
+      "http://localhost:8080/api/user/" +
+        localStorage.getItem("sentimentiUsername") +
+        "/watchlist/" +
+        ticker,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then(async (response) => {
         if (response.ok) {
           return response
@@ -157,6 +163,61 @@ export default function IndexPage() {
       })
   }
 
+  const collectNews = (event: any) => {
+    event.preventDefault()
+    setIsLoading(true)
+    fetch("http://localhost:8080/api/admin/collectNews/RapidAPI", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          return response
+        }
+        const errorMsg = await response.text()
+        throw new Error(errorMsg)
+      })
+      .then((response) => {
+        toast({
+          title: "Collected news",
+        })
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
+  }
+
+  const collectSentiment = (event: any) => {
+    event.preventDefault()
+    setIsLoading(true)
+    fetch("http://localhost:8080/api/admin/analyzeNews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (response.ok) {
+          return response
+        }
+        const errorMsg = await response.text()
+        throw new Error(errorMsg)
+      })
+      .then((response) => {
+        toast({
+          title: "Analyzed sentiment",
+        })
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error(error)
+        setIsLoading(false)
+      })
+  }
 
   return (
     <>
@@ -178,7 +239,9 @@ export default function IndexPage() {
                   <TableCell>{ticker.news.length}</TableCell>
                   <TableCell>
                     {" "}
-                    <Button onClick={() => deleteTicker(ticker.ticker)}>X</Button>
+                    <Button onClick={() => deleteTicker(ticker.ticker)}>
+                      X
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -192,33 +255,53 @@ export default function IndexPage() {
               <CardDescription></CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="grid w-full items-center gap-4">
-                  <div className="flex flex-col space-y-1.5">
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
                   <DropdownMenu>
-                  <DropdownMenuTrigger><Button>Add</Button></DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuLabel>Available tickers</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {availableTickers.map((ticker) => (
-                      <DropdownMenuItem key={ticker} onSelect={()=> tickerSelected(ticker)}>
-                        {ticker}
-                      </DropdownMenuItem>
-                    ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                  </div>
+                    <DropdownMenuTrigger>
+                      <Button>Add</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuLabel>Available tickers</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {availableTickers.map((ticker) => (
+                        <DropdownMenuItem
+                          key={ticker}
+                          onSelect={() => tickerSelected(ticker)}
+                        >
+                          {ticker}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
-
-                
+              </div>
             </CardContent>
-            <CardFooter className="flex justify-between">
-
-            </CardFooter>
+            <CardFooter className="flex justify-between"></CardFooter>
           </Card>
         </div>
       </div>
-      <Toaster/>
+      {window.localStorage.getItem("sentimentiUsername") === "admin" ? (
+        <div className="flex w-full justify-center">
+          <Button className="mx-2" onClick={collectNews}>
+            {isLoading ? (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              ""
+            )}{" "}
+            Collect news
+          </Button>
+          <Button className="mx-2" onClick={collectSentiment}>
+          {isLoading ? (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              ""
+            )}{" "}
+            Analyize sentiment
+          </Button>
+        </div>
+      ) : null}
+      <Toaster />
     </>
   )
 }
