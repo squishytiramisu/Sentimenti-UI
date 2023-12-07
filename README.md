@@ -1,6 +1,6 @@
 # Senti Menti UI
 
-Frontend for Senti Menti app
+Frontend for Senti Menti app, built with ShadCN and NextJS 13.
 
 ## Usage
 
