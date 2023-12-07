@@ -60,7 +60,7 @@ export default function IndexPage() {
       let username = localStorage.getItem("sentimentiUsername")
 
       if (username) {
-        fetch("http://localhost:8080/api/user/" + username + "/watchlist")
+        fetch(localStorage.getItem("beurl")+"/api/user/" + username + "/watchlist")
           .then(async (response) => {
             if (response.ok) {
               return await response.json()
@@ -75,7 +75,7 @@ export default function IndexPage() {
             console.error(error)
           })
 
-        fetch("http://localhost:8080/api/ticker")
+        fetch(localStorage.getItem("beurl")+"/api/ticker")
           .then(async (response) => {
             if (response.ok) {
               return await response.json()
@@ -100,7 +100,7 @@ export default function IndexPage() {
       return
     }
     fetch(
-      "http://localhost:8080/api/user/" +
+      localStorage.getItem("beurl")+"/api/user/" +
         localStorage.getItem("sentimentiUsername") +
         "/watchlist/" +
         ticker,
@@ -134,7 +134,7 @@ export default function IndexPage() {
       return
     }
     fetch(
-      "http://localhost:8080/api/user/" +
+      localStorage.getItem("beurl")+"/api/user/" +
         localStorage.getItem("sentimentiUsername") +
         "/watchlist/" +
         ticker,
@@ -166,7 +166,7 @@ export default function IndexPage() {
   const collectNews = (event: any) => {
     event.preventDefault()
     setIsLoading(true)
-    fetch("http://localhost:8080/api/admin/collectNews/RapidAPI", {
+    fetch(localStorage.getItem("beurl")+"/api/admin/collectNews/RapidAPI", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -194,7 +194,7 @@ export default function IndexPage() {
   const collectSentiment = (event: any) => {
     event.preventDefault()
     setIsLoading(true)
-    fetch("http://localhost:8080/api/admin/analyzeNews", {
+    fetch(localStorage.getItem("beurl")+"/api/admin/analyzeNews", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

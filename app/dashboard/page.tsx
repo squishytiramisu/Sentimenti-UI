@@ -62,7 +62,7 @@ export default function IndexPage() {
 
   const loadHeadlines = () => {
     fetch(
-      "http://localhost:8080/api/news/" +
+      localStorage.getItem("beurl")+"/api/news/" +
         localStorage.getItem("sentimentiUsername"),
       {
         method: "GET",
@@ -126,7 +126,7 @@ export default function IndexPage() {
 
     setTickerNews([])
     fetch(
-      "http://localhost:8080/api/news/ticker/" +ticker,
+      localStorage.getItem("beurl")+"/api/news/ticker/" +ticker,
       {
         method: "GET",
         headers: {

@@ -33,13 +33,18 @@ export default function IndexPage() {
   const [headlines, setHeadlines] = React.useState<any[]>([])
 
   useEffect(() => {
+
+
     if (typeof window !== "undefined" && window.localStorage) {
+      if(!localStorage.getItem("beurl")){
+        localStorage.setItem("beurl", "http://localhost:8080")
+      }
       loadHeadlines()
     }
   }, [])
 
   const loadHeadlines = () => {
-    fetch("http://localhost:8080/api/news/headlines", {
+    fetch(localStorage.getItem("beurl")+"/api/news/headlines", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

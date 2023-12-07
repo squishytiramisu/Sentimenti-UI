@@ -43,7 +43,7 @@ export function CardWithForm() {
 
 
     const handleSubmit = () => {
-      fetch('http://localhost:8080/api/user/'+username, {
+      fetch(localStorage.getItem("beurl")+'/api/user/'+username, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
